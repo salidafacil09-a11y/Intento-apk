@@ -1,3 +1,4 @@
+
 name: Compilar APK
 
 on:
@@ -11,6 +12,9 @@ jobs:
     steps:
       - name: Descargar el proyecto
         uses: actions/checkout@v4
+
+      - name: Descomprimir el juego
+        run: unzip -o proyecto-retorno.zip -x '.github/*'
 
       - name: Preparar Node
         uses: actions/setup-node@v4
@@ -41,6 +45,46 @@ jobs:
           M=android/app/src/main/AndroidManifest.xml
           sed -i '/android.permission.INTERNET/d' $M
           sed -i 's/android:name=".MainActivity"/android:name=".MainActivity" android:screenOrientation="sensorLandscape"/' $M
+
+      - name: Pantalla completa (sin barras y usando la cámara)
+        run: |
+          mkdir -p android/app/src/main/java/com/aron/proyectoretorno
+          cat > android/app/src/main/java/com/aron/proyectoretorno/MainActivity.java << 'EOF'
+          package com.aron.proyectoretorno;
+
+          import android.os.Bundle;
+          import android.view.WindowManager;
+          import androidx.core.view.WindowCompat;
+          import androidx.core.view.WindowInsetsCompat;
+          import androidx.core.view.WindowInsetsControllerCompat;
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {
+            @Override
+            public void onCreate(Bundle savedInstanceState) {
+              super.onCreate(savedInstanceState);
+              if (android.os.Build.VERSION.SDK_INT >= 28) {
+                getWindow().getAttributes().layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+              }
+              WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+              ocultarBarras();
+            }
+
+            @Override
+            public void onWindowFocusChanged(boolean hasFocus) {
+              super.onWindowFocusChanged(hasFocus);
+              if (hasFocus) ocultarBarras();
+            }
+
+            private void ocultarBarras() {
+              WindowInsetsControllerCompat c =
+                  new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
+              c.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+              c.hide(WindowInsetsCompat.Type.systemBars());
+            }
+          }
+          EOF
 
       - name: Compilar la APK
         working-directory: android

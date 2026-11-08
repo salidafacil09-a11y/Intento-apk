@@ -36,6 +36,9 @@ jobs:
       - name: Sincronizar con Android
         run: npx cap sync android
 
+      - name: Generar iconos de la app
+        run: npx @capacitor/assets@3 generate --android --iconBackgroundColor '#3A1A0E' --iconBackgroundColorDark '#3A1A0E'
+
       - name: Configurar el manifiesto (horizontal, sin permiso de red)
         run: |
           M=android/app/src/main/AndroidManifest.xml

@@ -1,4 +1,3 @@
-
 name: Compilar APK
 
 on:
@@ -12,9 +11,6 @@ jobs:
     steps:
       - name: Descargar el proyecto
         uses: actions/checkout@v4
-
-      - name: Descomprimir el juego
-        run: unzip -o proyecto-retorno.zip -x '.github/*'
 
       - name: Preparar Node
         uses: actions/setup-node@v4

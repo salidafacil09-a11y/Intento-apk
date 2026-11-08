@@ -1,0 +1,12 @@
+{
+  "appId": "com.aron.proyectoretorno",
+  "appName": "Proyecto Retorno",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#000000"
+  }
+}

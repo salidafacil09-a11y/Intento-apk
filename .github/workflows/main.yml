@@ -1,4 +1,3 @@
-
 name: Compilar APK
 
 on:
@@ -23,9 +22,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-
-      - name: Preparar Android SDK
-        uses: android-actions/setup-android@v3
 
       - name: Instalar dependencias
         run: npm install
